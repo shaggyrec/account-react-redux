@@ -1,0 +1,23 @@
+.errorBar{
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    right: 0;
+    left:0;
+    padding-left:50px;
+    cursor: pointer;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+}
+.errorBar__close{
+    transition: all .5s;
+}
+.errorBar__close:hover{
+    transform: rotate(180deg);
+}
+@media screen and (min-width: 993px){
+    .errorBar {
+        left: 240px;
+    }
+}

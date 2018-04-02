@@ -1,0 +1,27 @@
+import React, {Component} from 'react'
+import HeaderContainer from '../components/header/HeaderContainer'
+import PropTypes from 'prop-types'
+import ObjectHowToGetHere from '../components/howToGetHere/ObjectHowToGetHereContainer'
+import Footer from "../components/footer/footer"
+
+class ObjectHowToGetHerePage extends Component {
+    static contextTypes = {
+        router: PropTypes.object
+    }
+
+    render() {
+
+        return (
+            <div className='fixed-sn'>
+                <HeaderContainer/>
+                <main>
+                    <ObjectHowToGetHere id={this.props.match.params.id}/>
+                </main>
+                <Footer />
+            </div>
+        )
+    }
+}
+
+
+export default ObjectHowToGetHerePage

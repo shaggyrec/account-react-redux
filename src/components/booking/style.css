@@ -1,0 +1,35 @@
+.booking_feedWrap{
+    overflow: auto;
+    position: relative;
+    /*height: 100px;*/
+}
+.booking_feed {
+    display: inline-block;
+    min-width: 100%;
+}
+
+.booking_scrollBar{
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 15px;
+    right: 0;
+    height: 15px;
+    overflow-x:scroll
+}
+
+.booking_scrollBar.show{
+    display: block;
+}
+
+.booking_scrollBarInner{
+    height: 1px;
+}
+
+.booking-table-container{
+    font-size: 12px!important;
+}
+
+#reject_cause{
+    min-height:200px;
+}

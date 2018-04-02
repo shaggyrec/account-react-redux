@@ -1,0 +1,14 @@
+.FixedBottomBar.fixed{
+    position: fixed;
+    z-index: 98;
+    bottom: 0;
+    right: 0;
+    left:0;
+    background: rgba(255,255,255,.8);
+    padding-left:50px ;
+}
+@media screen and (min-width: 993px){
+    .FixedBottomBar.fixed {
+        left: 240px;
+    }
+}

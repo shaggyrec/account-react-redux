@@ -1,0 +1,51 @@
+.map__overlayDisable{
+    position:absolute;
+    z-index:10;
+    background:rgba(0,0,0,.5);
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+    color:#fff;
+    font-weight:900;
+}
+.map__placemark {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    background: url('data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDUyNS4xNTMgNTI1LjE1MyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNTI1LjE1MyA1MjUuMTUzOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCI+CjxnPgoJPHBhdGggZD0iTTI2Mi41NzYsMEMxNjAuOTU5LDAsNzguODE3LDgyLjE2NCw3OC44MTcsMTgzLjc2YzAsMTM3Ljg3NCwxODMuNzYsMzQxLjM5MywxODMuNzYsMzQxLjM5M3MxODMuNzYtMjAzLjUxOCwxODMuNzYtMzQxLjM5MyAgIEM0NDYuMzM2LDgyLjE2NCwzNjQuMTkzLDAsMjYyLjU3NiwweiBNMjYyLjU3NiwyNDkuNDA0Yy0zNi4yNTcsMC02NS42NDQtMjkuMzg3LTY1LjY0NC02NS42NDQgICBjMC0zNi4xNywyOS4zODctNjUuNjQ0LDY1LjY0NC02NS42NDRzNjUuNjQ0LDI5LjQ3NCw2NS42NDQsNjUuNjQ0QzMyOC4yMiwyMjAuMDM5LDI5OC44MzQsMjQ5LjQwNCwyNjIuNTc2LDI0OS40MDR6IiBmaWxsPSIjZjUwMDJkIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==') no-repeat 50% 40%;
+    background-size:45px;
+    transition:all .3s;
+}
+.map__placemark:before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 7px;
+    left: 50%;
+    top:50%;
+    margin-left: -5px;
+    border-radius: 30px;
+    background: rgba(0,0,0,.2);
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, .2);
+    transition: top, box-shaddow, background .3s;
+}
+.dragged .map__placemark {
+    transform: translateY(-10px);
+}
+.dragged .map__placemark:before{
+    top:60%;
+    width: 15px;
+    height: 10px;
+    margin-left: -7px;
+    background: rgba(0,0,0,.3);
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, .3);
+}

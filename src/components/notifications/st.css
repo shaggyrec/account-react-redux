@@ -1,0 +1,28 @@
+.wsNotifications {
+    position: fixed;
+    z-index: 1000;
+    right: 5px;
+    bottom: 0;
+}
+.wsNotification {
+    background: #f48536;
+    padding: .5rem 1rem;
+    width: 250px;
+    color: #fff;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+    margin-bottom: 10px;
+}
+.wsNotification__message {
+    color: #fff;
+}
+.wsNotification__close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+}

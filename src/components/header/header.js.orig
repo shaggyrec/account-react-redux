@@ -1,0 +1,289 @@
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
+import verification from '../utils/ObjectFullInfoVerification'
+import Modal from '../modal'
+
+
+class Header extends Component {
+    constructor(props) {
+        super(props)
+        this.sendToModeration = this.sendToModeration.bind(this)
+        this.modalClose = this.modalClose.bind(this)
+        this.state = {
+            showModal: false
+        }
+    }
+
+    static contextTypes = {
+        router: PropTypes.object
+    }
+    componentWillUnmount() {
+        //Important! If your component is navigating based on some global state(from say componentWillReceiveProps)
+        //always reset that global state back to null when you REMOUNT
+        this.props.resetMe();
+    }
+    sendToModeration(e){
+        const { activeObject } = this.props
+        verification(activeObject)
+            .then(result => {
+                this.setState({showModal:result})
+            })
+            .catch(err => {
+                this.setState({showModal:err})
+            })
+
+    }
+    renderModal(){
+        let message = []
+        if(typeof this.state.showModal === 'object') {
+            message.push(<h5 className="mb-1"  key={`errhead`}>Объект не может быть отправлен на модерацию:</h5>)
+            for(let err in this.state.showModal){
+                if(err === 'checkContract'){
+                    message.push(
+                        <div key={`err${err}`}>
+                            <p>{this.state.showModal[err]}</p>
+                            <Link className="btn btn-danger" to={`/lk/${this.props.activeObject.ID}/contract`}>Перейти к заключению договора</Link>
+                        </div>)
+                }else {
+                    message.push(<p key={`err${err}`}>{this.state.showModal[err]}</p>)
+                }
+            }
+        }else{
+            message.push(<h4 key={`modalhead`}>Объект отправлен на модерацию</h4>)
+        }
+
+        return <Modal show={!!this.state.showModal} onOk={this.modalClose} btnOkText="Понятно">{message}</Modal>
+    }
+
+    modalClose(){
+        this.setState({showModal:false})
+    }
+
+    renderLinks() {
+        const {activeObject} = this.props
+        if (activeObject && activeObject.ACTIVE === 'Y') {
+            return (
+                <ul className="navbar-nav hidden-sm-down">
+                    <li className="nav-item white-text">
+                        <span className="badge badge-success">id: {activeObject.ID}</span>
+                    </li>
+                    <li className="nav-item white-text">
+                        <h2 style={{padding:'0 10px'}} dangerouslySetInnerHTML={{__html: activeObject.NAME}}/>
+                    </li>
+                    <li className="nav-item white-text">
+                        <a target="_blank" href={`https://edem-v-gosti.ru${activeObject.DETAIL_PAGE_URL}`}><i
+                            className="fa fa-mail-forward" aria-hidden="true"></i> на страницу объекта</a>
+                    </li>
+                </ul>
+            )
+        } else if (activeObject) {
+            return (
+                <ul className="navbar-nav hidden-sm-down">
+                    <li className="nav-item white-text">
+                        <span className="badge badge-success">id: {activeObject.ID}</span>
+                    </li>
+                    <li className="nav-item white-text">
+                        <h2 style={{padding: '0 10px'}} dangerouslySetInnerHTML={{__html: activeObject.NAME}}/>
+                    </li>
+                    <li className="nav-item white-text">
+                        <button className="btn btn-sm success-color" target="_blank" onClick={this.sendToModeration}>
+                            Отправить на модерацию
+                        </button>
+                        {this.renderModal()}
+                    </li>
+                </ul>
+            )
+        } else {
+            return <div />
+        }
+    }
+
+    renderUserbar(user) {
+        if (user) {
+            return (
+                <ul className="navbar-nav ml-auto hidden-sm-down">
+                    <li className="nav-item btn-group">
+                        <a className="nav-link" onClick={this.props.logout}>Выход</a>
+                    </li>
+                </ul>
+            )
+        } else {
+            return <div />
+        }
+    }
+
+    renderAdminLinks(user, object) {
+        let adminLink = '/bitrix';
+        if (object && object.ID) {
+            adminLink += '/admin/iblock_section_admin.php?IBLOCK_ID=' + object.IBLOCK_ID + '&type=country&lang=ru&find_section_section=0';
+        }
+        if (user && user.group == 'admin') {
+            return (
+                <div className="d-flex flex-row" style={{margin: "3px"}}>
+                    <a href="/" target="_blank" className="white-text mr-3">Главная страница сайта</a>
+                    <a href={adminLink} target="_blank" className="white-text">Админка</a>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div className="d-flex flex-row">
+                </div>
+            );
+        }
+    }
+
+    renderObjectLinks(activeObject) {
+        if (activeObject && activeObject.ID) {
+            const url = this.context.router.route.location.pathname
+            return (
+                <li>
+                    <ul>
+                        <li className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <Link to={`/lk/${activeObject && activeObject.ID}/main`}
+                                  className="collapsible-header waves-effect arrow-r">
+                                <i className="fa fa-chevron-right"></i> Oбъект
+                                <a href="#item0" data-toggle="collapse"><i className="fa fa-angle-down rotate-icon"></i></a>
+                            </Link>
+                            <div id="item0"
+                                 className={`collapsible-body collapse ${activeObject && (url === `/lk/${activeObject && activeObject.ID}` || url === `/lk/${activeObject && activeObject.ID}/main` || url === `/lk/${activeObject && activeObject.ID}/desc` || url === `/lk/${activeObject && activeObject.ID}/photo` || url === `/lk/${activeObject && activeObject.ID}/services` || url === `/lk/${activeObject && activeObject.ID}/actions` || url === `/lk/${activeObject && activeObject.ID}/children` || url === `/lk/${activeObject && activeObject.ID}/conditions` || url === `/lk/${activeObject && activeObject.ID}/contacts` || url === `/lk/${activeObject && activeObject.ID}/how-to-get-here` || url.indexOf(`/lk/${activeObject && activeObject.ID}/rooms`) !== -1) ? 'show' : ''}`}>
+                                <ul>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/main`}
+                                              className="waves-effect">Основное</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}`} className="waves-effect">Рабочий
+                                        стол</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/contacts`}
+                                              className="waves-effect">Контакты</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/photo`}
+                                              className="waves-effect">Фотографии</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/services`}
+                                              className="waves-effect">Услуги и Удобства</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/actions`}
+                                              className="waves-effect">Акции и Скидки</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/children`}
+                                              className="waves-effect">Дети</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/conditions`}
+                                              className="waves-effect">Условия, Ограничения, Примечания</Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/how-to-get-here`}
+                                              className="waves-effect">Как добраться
+                                    </Link></li>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/distances`}
+                                              className="waves-effect">Расстояния
+                                    </Link></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li className="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children">
+                            <Link to={`/lk/${activeObject && activeObject.ID}/rooms`}
+                                  className="collapsible-header waves-effect arrow-r">
+                                <i className="fa fa-chevron-right"></i> Номера
+                                <a href="#item1" data-toggle="collapse"><i className="fa fa-angle-down rotate-icon"></i></a>
+                            </Link>
+                            <div id="item1"
+                                 className={`collapsible-body collapse ${activeObject && (url.indexOf(`/lk/${activeObject && activeObject.ID}/rooms`) === 0) ? 'show' : ''}`}>
+                                <ul>
+                                    <li><Link to={`/lk/${activeObject && activeObject.ID}/rooms/new`}
+                                              className="waves-effect">Создать новый номер</Link></li>
+                                    <li title="Доступность номеров, календарь бронирований"><Link
+                                        to={`/lk/${activeObject && activeObject.ID}/rooms/calendar`}
+                                        className="waves-effect">Доступность номеров, цены</Link></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <Link to={`/lk/${activeObject && activeObject.ID}/booking`}
+                                  className="collapsible-header waves-effect arrow-r"><i
+                                className="fa fa-chevron-right"></i> Бронирования (ожидаемые гости)
+                            </Link>
+                        </li>
+                        <li><Link to={`/lk/${activeObject && activeObject.ID}/reviews`}
+                                  className="collapsible-header waves-effect arrow-r"><i className="fa fa-eye"></i>
+                            Отзывы</Link>
+                        </li>
+                    </ul>
+                </li>
+            )
+        } else {
+            return <li/>
+        }
+    }
+
+    render() {
+        const {type, activeObject, authenticatedUser} = this.props
+        const url = this.context.router.route.location.pathname
+        if (type === 'no_left') {
+            return (
+                <header>
+                    <nav className="navbar fixed-top navbar-toggleable-md navbar-dark red double-nav">
+                        <button className="navbar-toggler navbar-toggler-left button-collapse" type="button"
+                                data-activates="slide-out" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                        <div className="d-flex flex-column">
+                            <Link to="/lk/" className="navbar-brand"></Link>
+                            {this.renderAdminLinks(authenticatedUser, activeObject)}
+                        </div>
+                        {this.renderUserbar(authenticatedUser)}
+                    </nav>
+                </header>
+            )
+        } else {
+            return (
+                <header>
+                    <ul id="slide-out" className={`side-nav fixed elegant-color ${authenticatedUser && authenticatedUser.group === 'admin' ? 'pt-2' : ''}`} >
+                        <li>
+                            <ul className="collapsible collapsible-accordion">
+                                <li>
+                                    <Link className="collapsible-header waves-effect arrow-r" to='/lk/'><i
+                                        className="fa fa-chevron-left"></i>Мои объекты</Link>
+                                </li>
+                                {this.renderObjectLinks(activeObject)}
+                                <li><a className={`collapsible-header waves-effect arrow-r`} data-toggle="collapse"
+                                       href="#item2"><i className="fa fa-hand-pointer-o"></i> Счета<i
+                                    className="fa fa-angle-down rotate-icon"></i></a>
+                                    <div id="item2"
+                                         className={`collapsible-body collapse${url.indexOf('/lk/invoices') === 0 || url.indexOf('/lk/contract') === 0 ? ' show' : ''}`}>
+                                        <ul>
+                                            <li><Link to="/lk/contracts" className="waves-effect">Договоры</Link>
+                                            </li>
+                                            <li><Link to="/lk/invoices" className="waves-effect">Счета</Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li><Link className="collapsible-header waves-effect arrow-r" to="/lk/notifications"><i
+                                    className="fa fa-envelope-o"></i> Уведомления</Link></li>
+                                <li><Link className="collapsible-header waves-effect arrow-r" to="/lk/faq"><i
+                                    className="fa fa-eye"></i>
+                                    Помощь</Link></li>
+                                <li>
+                                    <Link className="collapsible-header waves-effect arrow-r" to="/lk/feedback"><i
+                                        className="fa fa-eye"></i>
+                                        Обратная связь</Link>
+                                </li>
+                                <li><a className="collapsible-header waves-effect arrow-r"
+                                       onClick={this.props.logout}><i className="fa fa-sign-out"></i>
+                                    Выход</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <nav className="navbar fixed-top navbar-toggleable-md navbar-dark red double-nav">
+                        <button className="navbar-toggler navbar-toggler-left button-collapse" type="button"
+                                data-activates="slide-out" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                        <div className="d-flex flex-column">
+                            <Link to="/lk/" className="navbar-brand"></Link>
+                            {this.renderAdminLinks(authenticatedUser, activeObject)}
+                        </div>
+                        { this.renderLinks() }
+                        {this.renderUserbar(authenticatedUser)}
+                    </nav>
+                </header>
+            );
+        }
+    }
+}
+
+export default Header
